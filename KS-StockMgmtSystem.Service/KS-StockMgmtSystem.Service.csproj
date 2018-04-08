@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>KS_StockMgmtSystem.Service</AssemblyName>
+    <RootNamespace>KS_StockMgmtSystem.Service</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KS-StockMgmtSystem.Model\KS-StockMgmtSystem.Model.csproj" />
+  </ItemGroup>
+
+</Project>

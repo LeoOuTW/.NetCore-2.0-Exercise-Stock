@@ -1,0 +1,49 @@
+﻿@*@model KS_StockMgmtSystem.Model.ViewModel.FrontEnd.StockDataSearchResultListViewModel*@
+
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Jan</th>
+            <th>Feb</th>
+            <th>Mar</th>
+            <th>Apr</th>
+            <th>May</th>
+            <th>Jun</th>
+            <th>Jul</th>
+            <th>Aug</th>
+            <th>Sep</th>
+            <th>Oct</th>
+            <th>Nov</th>
+            <th>Dec</th>
+        </tr>
+    </thead>
+    <tbody>
+        @*@foreach (var item in Model.List)*@
+        @foreach (var item in ViewBag.OnePageOfList)
+        {
+            <tr>
+                <th>@item.StockName</th>
+                <td>@item.Jan.ToString()</td>
+                <td>@item.Feb.ToString()</td>
+                <td>@item.Mar.ToString()</td>
+                <td>@item.Apr.ToString()</td>
+                <td>@item.May.ToString()</td>
+                <td>@item.Jun.ToString()</td>
+                <td>@item.Jul.ToString()</td>
+                <td>@item.Aug.ToString()</td>
+                <td>@item.Sep.ToString()</td>
+                <td>@item.Oct.ToString()</td>
+                <td>@item.Nov.ToString()</td>
+                <td>@item.Dec.ToString()</td>
+            </tr>
+        }
+
+
+    </tbody>
+
+</table>
+@Html.PagedListPager((IPagedList)ViewBag.OnePageOfList, page => Url.Action("List_Partial", new { page, Year= ViewBag.Year, Version=ViewBag.Version }))

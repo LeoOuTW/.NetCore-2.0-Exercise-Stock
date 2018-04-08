@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_KSLayout.cshtml";
+}
+
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>@ViewData["Title"] <small></small></h3>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <form class="form-inline" method="post">
+                            <div class="form-group">
+                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                    @Html.DropDownList("ddl_Year", (SelectList)ViewBag.YearDDL, "先選擇 年度", new { id = "ddl_Year", @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                    <select class="form-control" id="ddl_Version" name="ddl_Version">
+                                        <option value="">再選擇 版次</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" style="margin-bottom:0px;" id="btnSearch">Search</button>
+                            <button type="submit" class="btn btn-primary" style="margin-bottom:0px;" id="btnExport">匯出</button>
+                        </form>
+                    </div>
+
+                    <div class="x_content" id="DataList">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script>
+    var fetchPage = function (pageURL) {
+
+        //var pUrl = pageURL + "&Year=" + $("#ddl_Year").val() + "&Version=" + $("#ddl_Version").val();
+
+        $.get(pageURL, function (data) {
+
+            $('#DataList').html(data);
+
+            $('#DataList .pagination li a').each(function (i, item) {
+                var hyperLinkUrl = $(item).attr('href');
+                if (typeof hyperLinkUrl !== 'undefined' && hyperLinkUrl !== false) {
+                    $(item).attr('href', '#').click(function (event) {
+                        event.preventDefault();
+                        $(event.target).attr('href');
+                        fetchPage(hyperLinkUrl);
+                    });
+                }
+            });
+        });
+    };
+
+    $('#btnSearch').click(function () {
+
+        var selectedYear = $.trim($('#ddl_Year option:selected').val());
+        var selectedVersion = $.trim($('#ddl_Version option:selected').val());
+
+        if (selectedYear.length == 0) {
+
+            alert("請選擇 年度");
+
+        } else if (selectedVersion.length == 0) {
+
+            alert("請選擇 版次");
+
+        } else {
+
+            var pagedPartialUrl = '@Url.Action("List_Partial", "Stock", new { Page = 1 })' + "&Year=" + selectedYear + "&Version=" + selectedVersion;
+
+            fetchPage(pagedPartialUrl);
+
+        }
+
+    });
+
+    $('#ddl_Year').change(function () {
+        var selectedYear = $.trim($('#ddl_Year option:selected').val());
+        if (selectedYear.length==0) {
+            $('#ddl_Version').empty();
+            $('#ddl_Version').append($('<option></option>').val('0').text(' 再選擇 版次'));
+        }
+        else {
+            $.getJSON('@Url.Action("GetVersionList", "Stock", new { Year = "YEAR" })'.replace("YEAR", parseInt(selectedYear)), function (data) {
+                $.each(data, function (index) {
+                    $('#ddl_Version').append($('<option>', {
+                        value: data[index].version,
+                        text: data[index].version
+                    }));
+                });
+            });
+        }
+    });
+
+    $('#btnExport').click(function () {
+
+        var selectedYear = $.trim($('#ddl_Year option:selected').val());
+        var selectedVersion = $.trim($('#ddl_Version option:selected').val());
+
+        if (selectedYear.length == 0) {
+
+            alert("請選擇 年度");
+            event.preventDefault();
+
+        } else if (selectedVersion.length == 0) {
+
+            alert("請選擇 版次");
+            event.preventDefault();
+        }
+
+    });
+
+
+</script>
